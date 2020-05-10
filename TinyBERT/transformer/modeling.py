@@ -27,6 +27,7 @@ import tarfile
 import tempfile
 import sys
 from io import open
+from collections import OrderedDict
 
 import torch
 import torch.nn.functional as F
@@ -694,6 +695,7 @@ class BertPreTrainedModel(nn.Module):
                 pretrained_model_name_or_path, WEIGHTS_NAME)
             logger.info("Loading model {}".format(weights_path))
             state_dict = torch.load(weights_path, map_location='cpu')
+            state_dict = OrderedDict([('bert.' + k, v) if not k.startswith('bert.') else (k, v) for k, v in state_dict.items()])
 
         if from_tf:
             # Directly load from a TensorFlow checkpoint
@@ -740,6 +742,7 @@ class BertPreTrainedModel(nn.Module):
         logger.info('loading model...')
         load(model, prefix=start_prefix)
         logger.info('done!')
+        
         if len(missing_keys) > 0:
             logger.info("Weights of {} not initialized from pretrained model: {}".format(
                 model.__class__.__name__, missing_keys))

@@ -29,6 +29,7 @@ import numpy as np
 import torch
 from torch.utils.data import (DataLoader, RandomSampler, SequentialSampler,
                               TensorDataset)
+
 from tqdm import tqdm, trange
 
 from torch.nn import CrossEntropyLoss, MSELoss
@@ -186,7 +187,9 @@ class MnliProcessor(DataProcessor):
             text_b = line[9]
             label = line[-1]
             examples.append(
-                InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+                InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+            examples.append(
+                InputExample(guid=guid, text_a=text_b, text_b=None, label=label))
         return examples
 
 
